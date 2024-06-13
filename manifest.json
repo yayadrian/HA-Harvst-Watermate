@@ -1,0 +1,13 @@
+{
+  "domain": "harvst_watermate",
+  "name": "Harvst WaterMate",
+  "codeowners": [
+    "@yayadrian"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/harvster",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "version": "0.0.2"
+}
