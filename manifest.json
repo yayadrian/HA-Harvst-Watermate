@@ -6,7 +6,7 @@
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://www.home-assistant.io/integrations/harvster",
+  "documentation": "https://github.com/yayadrian/HA-Harvst-Watermate",
   "iot_class": "local_polling",
   "requirements": [],
   "version": "0.0.2"
