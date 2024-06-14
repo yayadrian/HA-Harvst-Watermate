@@ -7,8 +7,8 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/yayadrian/HA-Harvst-Watermate",
-  "issue_tracker": "https://github.com/yayadrian/HA-Harvst-Watermate/issues",
   "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/yayadrian/HA-Harvst-Watermate/issues",
   "requirements": [],
   "version": "0.0.2"
 }
