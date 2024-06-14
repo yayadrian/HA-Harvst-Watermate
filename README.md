@@ -35,8 +35,8 @@ This is an attempt to pull data and control the local web interface of the Harvs
 - Sprout S24 - 4-Season - Firmware 2024060601
 
 ## TODO:
-- Add to HACS
-- Reduce number of calls made to device
-- Add control of water pumping (Zone 1 & 2)
-- Add monitoring of water pumping state
-- Add extra device data.
+- [ ] Add to HACS
+- [ ] Reduce number of calls made to device
+- [ ] Add control of water pumping (Zone 1 & 2)
+- [ ] Add monitoring of water pumping state
+- [ ] Add extra device data.
