@@ -11,9 +11,22 @@ This is an attempt to pull data and control the local web interface of the Harvs
 - 1x Temperature Sensor
 - Switch 3 outputs on/off
 
-## Installation (Manual only)
+## Installation 
 
-1. Copy the `custom_components/HA-Harvst-Watermate` directory into your Home Assistant `config` directory.
+
+
+### HACS
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=yay-adrian&repository=HA-Harvst-Watermate&category=Integration)
+
+Or
+Search for `Harvst Watermate` in HACS and install it under the "Integrations" category.
+
+### Manual Installation
+<details>
+<summary>More Details</summary>
+
+* You should take the latest [published release]([https://github.com/andrew-codechimp/ha-battery-notes/releases](https://github.com/yayadrian/HA-Harvst-Watermate/releases/).  
+* To install, place the contents of `custom_components` into the `<config directory>/custom_components` folder of your Home Assistant installation.  
 
 ## Post Installation Steps
 
@@ -35,7 +48,7 @@ This is an attempt to pull data and control the local web interface of the Harvs
 - Sprout S24 - 4-Season - Firmware 2024060601
 
 ## TODO:
-- [ ] Add to HACS
+- [x] Add to HACS
 - [ ] Reduce number of calls made to device
 - [ ] Add control of water pumping (Zone 1 & 2)
 - [ ] Add monitoring of water pumping state
