@@ -27,10 +27,10 @@ Search for `Harvst Watermate` in HACS and install it under the "Integrations" ca
 
 * You should take the latest [published release]([https://github.com/andrew-codechimp/ha-battery-notes/releases](https://github.com/yayadrian/HA-Harvst-Watermate/releases/).  
 * To install, place the contents of `custom_components` into the `<config directory>/custom_components` folder of your Home Assistant installation.  
+</details>
 
 ## Post Installation Steps
-
-2. Add the following entry to your `configuration.yaml` file:
+1. Add the following entry to your `configuration.yaml` file:
 
     ```yaml
     sensor:
@@ -42,7 +42,7 @@ Search for `Harvst Watermate` in HACS and install it under the "Integrations" ca
         host: **IP_OF_YOUR_DEVICE**
     ```
 
-3. Restart Home Assistant.
+2. Restart Home Assistant.
 
 ## Devices tested on
 - Sprout S24 - 4-Season - Firmware 2024060601
