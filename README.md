@@ -18,15 +18,18 @@ This is an attempt to pull data and control the local web interface of the Harvs
 ### HACS
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=yay-adrian&repository=HA-Harvst-Watermate&category=Integration)
 
-Or
-Search for `Harvst Watermate` in HACS and install it under the "Integrations" category.
+Restart Home Assistant
+
+In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Harvst Watermate"
 
 ### Manual Installation
 <details>
 <summary>More Details</summary>
 
-* You should take the latest [published release]([https://github.com/andrew-codechimp/ha-battery-notes/releases](https://github.com/yayadrian/HA-Harvst-Watermate/releases/).  
-* To install, place the contents of `custom_components` into the `<config directory>/custom_components` folder of your Home Assistant installation.  
+* You should take the latest [published release](https://github.com/yayadrian/HA-Harvst-Watermate/releases/).  
+* To install, place the contents of `custom_components` into the `<config directory>/custom_components` folder of your Home Assistant installation.
+* Restart Home Assistant
+* In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Harvst Watermate"
 </details>
 
 ## Post Installation Steps
