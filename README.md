@@ -25,7 +25,7 @@ Search for `Harvst Watermate` in HACS and install it under the "Integrations" ca
 <details>
 <summary>More Details</summary>
 
-* You should take the latest [published release]([https://github.com/andrew-codechimp/ha-battery-notes/releases](https://github.com/yayadrian/HA-Harvst-Watermate/releases/).  
+* You should take the latest [published release](https://github.com/yayadrian/HA-Harvst-Watermate/releases/).  
 * To install, place the contents of `custom_components` into the `<config directory>/custom_components` folder of your Home Assistant installation.  
 </details>
 
