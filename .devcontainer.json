@@ -1,7 +1,13 @@
 {
-    "name": "ludeeus/integration_blueprint",
-    "image": "mcr.microsoft.com/devcontainers/python:3.12",
+    "name": "yayadrian/HA-Harvst-Watermate",
+    "image": "mcr.microsoft.com/vscode/devcontainers/python:3.12-bullseye",
     "postCreateCommand": "scripts/setup",
+    "runArgs": [
+        "--network=host"
+    ],
+    "appPort": [
+        8123
+    ],
     "forwardPorts": [
         8123
     ],
@@ -14,28 +20,32 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "charliermarsh.ruff",
-                "github.vscode-pull-request-github",
                 "ms-python.python",
+                "github.vscode-pull-request-github",
+                "ryanluker.vscode-coverage-gutters",
                 "ms-python.vscode-pylance",
-                "ryanluker.vscode-coverage-gutters"
+                "ms-python.black-formatter",
+                "ms-python.debugpy"
             ],
             "settings": {
                 "files.eol": "\n",
                 "editor.tabSize": 4,
-                "editor.formatOnPaste": true,
+                "python.pythonPath": "/usr/bin/python3",
+                "python.analysis.autoSearchPaths": false,
+                "python.formatting.provider": "black",
+                "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+                "editor.formatOnPaste": false,
                 "editor.formatOnSave": true,
-                "editor.formatOnType": false,
+                "editor.formatOnType": true,
                 "files.trimTrailingWhitespace": true,
-                "python.analysis.typeCheckingMode": "basic",
-                "python.analysis.autoImportCompletions": true,
-                "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "[python]": {
-                    "editor.defaultFormatter": "charliermarsh.ruff"
+                "[markdown]": {
+                    "files.trimTrailingWhitespace": false
                 }
             }
         }
     },
     "remoteUser": "vscode",
-    "features": {}
+    "features": {
+        "ghcr.io/devcontainers/features/rust:1": {}
+    }
 }

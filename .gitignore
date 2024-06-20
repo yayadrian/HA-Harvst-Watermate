@@ -17,3 +17,4 @@ coverage.xml
 config/*
 !config/configuration.yaml
 /config
+HA-Harvst-Watermate.code-workspace
