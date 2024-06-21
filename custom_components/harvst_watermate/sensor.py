@@ -81,4 +81,4 @@ class TemperatureSilver(SensorEntity):
         new_reading = get_new_reading(self.url_to_events)
         print(new_reading)
 
-        self._attr_native_value = new_reading["te"]
+        self._attr_native_value = new_reading.get("te")
