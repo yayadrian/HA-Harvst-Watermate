@@ -33,7 +33,7 @@ def get_new_reading(hosturl):
 
     # Make the HTTP request and handle the SSE stream
     with requests.get(
-        hosturl, headers=headers, verify=False, stream=True, timeout=30
+        hosturl, headers=headers, verify=False, stream=True, timeout=10
     ) as response:
         for line in response.iter_lines():
             if line:
@@ -59,7 +59,7 @@ def setup_platform(
 class PumpSensor(BinarySensorEntity):
     """Representation of a Binary Sensor."""
 
-    _attr_name = "Harvst Pump Running"
+    _attr_name = "Watermate Pump"
     _attr_device_class = BinarySensorDeviceClass.RUNNING
 
     def __init__(self, host_ip) -> None:
@@ -79,4 +79,4 @@ class PumpSensor(BinarySensorEntity):
         print("pump status: ")
         print(new_reading)
 
-        self._attr_native_value = new_reading["pz"]
+        self._attr_is_on = bool(new_reading.get("pz"))
