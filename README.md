@@ -10,16 +10,13 @@ This is an attempt to pull data and control the local web interface of the Harvs
 ## Currently Supported Functions
 - 1x Temperature Sensor
 - Switch 3 outputs on/off
+- Monitoring Pump Running State - _Requires Firmware 2024061702_
 
 ## Installation 
-
-
 
 ### HACS
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=yay-adrian&repository=HA-Harvst-Watermate&category=Integration)
 
-Or
-Search for `Harvst Watermate` in HACS and install it under the "Integrations" category.
 
 ### Manual Installation
 <details>
@@ -40,6 +37,10 @@ Search for `Harvst Watermate` in HACS and install it under the "Integrations" ca
     switch:
       - platform: harvst_watermate
         host: **IP_OF_YOUR_DEVICE**
+    
+    binary_sensor:
+      - platform: harvst_watermate
+        host: **IP_OF_YOUR_DEVICE**
     ```
 
 2. Restart Home Assistant.
@@ -49,7 +50,7 @@ Search for `Harvst Watermate` in HACS and install it under the "Integrations" ca
 
 ## TODO:
 - [x] Add to HACS
-- [ ] Reduce number of calls made to device
+- [x] Reduce number of calls made to device
+- [x] Add monitoring of water pumping state
 - [ ] Add control of water pumping (Zone 1 & 2)
-- [ ] Add monitoring of water pumping state
 - [ ] Add extra device data.
