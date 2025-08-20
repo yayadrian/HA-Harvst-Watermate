@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 
 import requests
-
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -72,11 +71,11 @@ class TemperatureSilver(SensorEntity):
         print("Init: " + self._attr_name)
 
     def update(self) -> None:
-        """Fetch new state data for the sensor.
+        """
+        Fetch new state data for the sensor.
 
         This is the only method that should fetch new data for Home Assistant.
         """
-
         # Call the function to get a new reading
         new_reading = get_new_reading(self.url_to_events)
         print(new_reading)

@@ -15,7 +15,6 @@ PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.SWITCH, Platform.S
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Harvester from a config entry."""
-
     hass.data.setdefault(DOMAIN, {})
     # TODO 1. Create API instance
     # TODO 2. Validate the API connection (and authentication)

@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 
 import requests
-
 from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
