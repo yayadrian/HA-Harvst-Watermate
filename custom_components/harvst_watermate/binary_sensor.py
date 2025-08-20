@@ -28,8 +28,6 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up WaterMate binary sensor entities from a config entry."""
-    from .api import WaterMateAPI  # noqa: PLC0415
-
     api: WaterMateAPI = hass.data[DOMAIN][entry.entry_id]
 
     entities = [

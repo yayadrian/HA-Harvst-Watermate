@@ -48,11 +48,13 @@ class WaterMateAPI:
         try:
             return self._get_sse_data(self.events_url, REQUEST_TIMEOUT)
         except requests.RequestException as err:
-            _LOGGER.error("Failed to get device data from %s: %s", self.host, err)
-            raise WaterMateConnectionError(f"Cannot connect to {self.host}") from err
+            error_msg = f"Failed to get device data from {self.host}"
+            _LOGGER.exception(error_msg)
+            raise WaterMateConnectionError(error_msg) from err
         except json.JSONDecodeError as err:
-            _LOGGER.error("Invalid JSON response from %s: %s", self.host, err)
-            raise WaterMateAPIError(f"Invalid response from {self.host}") from err
+            error_msg = f"Invalid response from {self.host}"
+            _LOGGER.exception(error_msg)
+            raise WaterMateAPIError(error_msg) from err
 
     async def get_quick_reading(self) -> dict[str, Any] | None:
         """Get a quick reading with shorter timeout for frequent updates."""
@@ -110,17 +112,14 @@ class WaterMateAPI:
             if response.status_code == HTTP_OK:
                 _LOGGER.debug("Successfully sent command %s to %s", command, self.host)
                 return True
-            else:
-                _LOGGER.error(
-                    "Command %s failed for %s: HTTP %d",
-                    command,
-                    self.host,
-                    response.status_code,
-                )
-                return False
 
-        except requests.RequestException as err:
-            _LOGGER.error("Failed to send command %s to %s: %s", command, self.host, err)
+            _LOGGER.error(
+                "Command %s failed for %s: HTTP %d", command, self.host, response.status_code
+            )
+            return False
+
+        except requests.RequestException:
+            _LOGGER.exception("Failed to send command %s to %s", command, self.host)
             return False
 
     async def test_connection(self) -> bool:
