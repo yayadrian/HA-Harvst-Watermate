@@ -1,81 +1,69 @@
+"""Platform for binary sensor integration."""
+
 from __future__ import annotations
 
-import json
+import logging
+from typing import TYPE_CHECKING
 
-import requests
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
-from homeassistant.const import CONF_HOST
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+
+from .const import DOMAIN
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from .api import WaterMateAPI
+
+_LOGGER = logging.getLogger(__name__)
 
 
-def get_new_reading(hosturl):
-    # Set the headers
-    headers = {
-        "Accept": "text/event-stream",
-        "User-Agent": "Mozilla/5.0 (Home Assistant Integration)",
-    }
-
-    # Custom event listener
-    def handle_event(event):
-        if event.startswith("data:"):
-            # Extract the data field from the event
-            data = event[len("data: ") :].strip()  # Remove leading/trailing whitespace
-            if data.startswith("{") and data.endswith("}"):
-                # Parse the JSON data
-                return json.loads(data)
-                # return relevant_data
-
-    # Make the HTTP request and handle the SSE stream
-    with requests.get(
-        hosturl, headers=headers, verify=False, stream=True, timeout=10
-    ) as response:
-        for line in response.iter_lines():
-            if line:
-                relevant_data = handle_event(line.decode("utf-8"))
-                if relevant_data:
-                    return relevant_data
-
-
-def setup_platform(
+async def async_setup_entry(
     hass: HomeAssistant,
-    config: ConfigType,
-    add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the binary sensor platform."""
-    host_ip = config.get(CONF_HOST)
+    """Set up WaterMate binary sensor entities from a config entry."""
+    from .api import WaterMateAPI  # noqa: PLC0415
 
-    pumpState = PumpSensor(host_ip=host_ip)
+    api: WaterMateAPI = hass.data[DOMAIN][entry.entry_id]
 
-    add_entities([pumpState])
+    entities = [
+        WaterMatePumpSensor(
+            api=api,
+            name="WaterMate Pump",
+            unique_id=f"{entry.entry_id}_pump",
+        ),
+    ]
+
+    async_add_entities(entities)
 
 
-class PumpSensor(BinarySensorEntity):
-    """Representation of a Binary Sensor."""
+class WaterMatePumpSensor(BinarySensorEntity):
+    """Representation of a WaterMate Pump Binary Sensor."""
 
-    _attr_name = "Watermate Pump"
     _attr_device_class = BinarySensorDeviceClass.RUNNING
 
-    def __init__(self, host_ip) -> None:
-        """Initialize the output."""
-        self.url_to_events = "http://" + host_ip + "/events"
+    def __init__(
+        self,
+        api: WaterMateAPI,
+        name: str,
+        unique_id: str,
+    ) -> None:
+        """Initialize the binary sensor."""
+        self._api = api
+        self._attr_name = name
+        self._attr_unique_id = unique_id
         self._attr_is_on = False
-        print("Init: " + self._attr_name)
+        _LOGGER.debug("Initialized pump sensor: %s", name)
 
-    def update(self) -> None:
-        """
-        Fetch new state data for the sensor.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        # Call the function to get a new reading
-        new_reading = get_new_reading(self.url_to_events)
-        print("pump status: ")
-        print(new_reading)
-
-        self._attr_is_on = bool(new_reading.get("pz"))
+    async def async_update(self) -> None:
+        """Fetch new state data for the sensor."""
+        _LOGGER.debug("Updating pump sensor: %s", self._attr_name)
+        data = await self._api.get_quick_reading()
+        if data:
+            self._attr_is_on = bool(data.get("pz", False))
