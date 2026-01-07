@@ -545,5 +545,4 @@ x3On, x3Off  # Output 3
 
 ---
 
-**Last Updated**: 2026-01-07
 **Document Version**: 1.0.0
