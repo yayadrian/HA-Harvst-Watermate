@@ -1,131 +1,95 @@
-"""Platform for Switch integration."""
+"""Switch platform for Harvst WaterMate."""
 
 from __future__ import annotations
 
-import json
-
-import requests
+from typing import Final
 
 from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity
-from homeassistant.const import CONF_HOST
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+
+from . import HarvstWatermateDataUpdateCoordinator
+from .api import HarvstWatermateApiClient, HarvstWatermateApiClientError
+from .const import DOMAIN
+from .entity import HarvstWatermateEntity
+
+OUTPUTS: Final[tuple[tuple[str, str], ...]] = (
+    ("x1", "Watermate Output 1"),
+    ("x2", "Watermate Output 2"),
+    ("x3", "Watermate Output 3"),
+)
 
 
-def get_new_reading(hosturl):
-    # Set the headers
-    headers = {
-        "Accept": "text/event-stream",
-        "User-Agent": "Mozilla/5.0 (Home Assistant Integration)",
-    }
-
-    # Custom event listener
-    def handle_event(event):
-        if event.startswith("data:"):
-            # Extract the data field from the event
-            data = event[len("data: ") :].strip()  # Remove leading/trailing whitespace
-            if data.startswith("{") and data.endswith("}"):
-                # Parse the JSON data
-                return json.loads(data)
-                # return relevant_data
-
-    # Make the HTTP request and handle the SSE stream
-    with requests.get(
-        hosturl, headers=headers, verify=False, stream=True, timeout=30
-    ) as response:
-        for line in response.iter_lines():
-            if line:
-                relevant_data = handle_event(line.decode("utf-8"))
-                if relevant_data:
-                    return relevant_data
-
-
-def send_turn_command(output, host_ip, state):
-    # 'x1Off' - output1
-    # Define the URL and parameters
-    url = "http://" + host_ip + "/control"
-    turn_command = output + state
-    params = {"do": turn_command}
-
-    # Set the minimal headers (you may need to adjust these based on the server's requirements)
-    headers = {
-        "Accept": "*/*",
-        "User-Agent": "Mozilla/5.0 (Home Assistant Integration)",
-    }
-
-    # Send the request
-    response = requests.get(
-        url, headers=headers, params=params, verify=False, timeout=30
-    )
-
-    # Check if the response is successful
-    if response.status_code == 200:
-        print("Success: The command was executed successfully.")
-        return True
-    else:
-        print(f"Error: The request failed with status code {response.status_code}.")
-        return False
-
-
-def setup_platform(
+async def async_setup_entry(
     hass: HomeAssistant,
-    config: ConfigType,
-    add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the sensor platform."""
-    host_ip = config.get(CONF_HOST)
+    """Set up WaterMate switches from a config entry."""
+    data = hass.data[DOMAIN][entry.entry_id]
+    coordinator: HarvstWatermateDataUpdateCoordinator = data["coordinator"]
+    api: HarvstWatermateApiClient = data["api"]
 
-    x1_switch = SwitchOutput(
-        name="Watermate Output1",
-        device_class=SwitchDeviceClass.SWITCH,
-        host_ip=host_ip,
-        output_id="x1",
-    )
+    entities = [
+        HarvstWatermateSwitch(coordinator, entry, api, output_id, name)
+        for output_id, name in OUTPUTS
+    ]
 
-    x2_switch = SwitchOutput(
-        name="Watermate Output2",
-        device_class=SwitchDeviceClass.SWITCH,
-        host_ip=host_ip,
-        output_id="x2",
-    )
-
-    x3_switch = SwitchOutput(
-        name="Watermate Output3",
-        device_class=SwitchDeviceClass.SWITCH,
-        host_ip=host_ip,
-        output_id="x3",
-    )
-
-    add_entities([x1_switch, x2_switch, x3_switch])
+    async_add_entities(entities)
 
 
-class SwitchOutput(SwitchEntity):
-    """Representation of a Switch."""
+class HarvstWatermateSwitch(HarvstWatermateEntity, SwitchEntity):
+    """Representation of a WaterMate controllable output."""
 
-    def __init__(self, name, device_class, host_ip, output_id) -> None:
-        """Initialize the output."""
-        self._attr_name = name
-        self._attr_device_class = device_class
-        self.host_ip = host_ip
-        self.url_to_events = "http://" + host_ip + "/events"
-        self.output_id = output_id
-        self._attr_is_on = False
-        print("Init: " + self._attr_name)
+    _attr_device_class = SwitchDeviceClass.SWITCH
 
-    def turn_on(self, **kwargs) -> None:
-        """Turn the entity on."""
-        result = send_turn_command(self.output_id, self.host_ip, "On")
-        self._attr_is_on = result
+    def __init__(
+        self,
+        coordinator: HarvstWatermateDataUpdateCoordinator,
+        entry: ConfigEntry,
+        api: HarvstWatermateApiClient,
+        output_id: str,
+        name: str,
+    ) -> None:
+        super().__init__(
+            coordinator,
+            entry,
+            unique_suffix=f"switch-{output_id}",
+            name=name,
+        )
+        self._api = api
+        self._output_id = output_id
 
-    def turn_off(self, **kwargs) -> None:
-        """Turn the entity off."""
-        result = send_turn_command(self.output_id, self.host_ip, "Off")
-        self._attr_is_on = result
+    @property
+    def is_on(self) -> bool | None:
+        data = self.coordinator.data or {}
+        value = data.get(self._output_id)
+        if value is None:
+            return None
+        if isinstance(value, (int, float)):
+            return value != 0
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"1", "true", "on"}:
+                return True
+            if normalized in {"0", "false", "off"}:
+                return False
+        return bool(value)
 
-    def update(self) -> None:
-        """Update the state of the entity."""
-        print("Updating: " + self._attr_name)
-        new_reading = get_new_reading(self.url_to_events)
-        self._attr_is_on = bool(new_reading.get(self.output_id))
+    async def async_turn_on(self, **kwargs) -> None:
+        await self._async_send_command(True)
+
+    async def async_turn_off(self, **kwargs) -> None:
+        await self._async_send_command(False)
+
+    async def _async_send_command(self, turn_on: bool) -> None:
+        try:
+            await self._api.async_set_output(self._output_id, turn_on)
+        except HarvstWatermateApiClientError as err:
+            raise HomeAssistantError(
+                f"Unable to set {self.name} to {'on' if turn_on else 'off'}: {err}"
+            ) from err
+
+        await self.coordinator.async_request_refresh()

@@ -27,23 +27,22 @@ This is an attempt to pull data and control the local web interface of the Harvs
 </details>
 
 ## Post Installation Steps
-1. Add the following entry to your `configuration.yaml` file:
 
-    ```yaml
-    sensor:
-      - platform: harvst_watermate
-        host: **IP_OF_YOUR_DEVICE**
+1. Go to **Settings** > **Devices & Services** > **Add Integration**
+2. Search for "Harvst WaterMate"
+3. Enter the IP address of your WaterMate device
+4. The integration will create a device with all sensors and switches
 
-    switch:
-      - platform: harvst_watermate
-        host: **IP_OF_YOUR_DEVICE**
-    
-    binary_sensor:
-      - platform: harvst_watermate
-        host: **IP_OF_YOUR_DEVICE**
-    ```
+## Upgrading from v0.x
 
-2. Restart Home Assistant.
+Version 1.0.0 includes breaking changes. If you were using a previous version:
+
+1. Remove any `harvst_watermate` entries from your `configuration.yaml`
+2. Remove the old integration from **Settings** > **Devices & Services**
+3. Restart Home Assistant
+4. Re-add the integration using the steps above
+
+See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ## Standalone API Harness
 

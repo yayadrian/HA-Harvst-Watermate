@@ -1,3 +1,5 @@
-"""Constants for the Harvester integration."""
+"""Constants for the Harvst WaterMate integration."""
 
-DOMAIN = "harvster"
+DOMAIN = "harvst_watermate"
+
+DEFAULT_NAME = "Harvst WaterMate"

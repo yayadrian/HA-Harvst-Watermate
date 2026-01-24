@@ -1,84 +1,63 @@
-"""Platform for sensor integration."""
+"""Sensor platform for Harvst WaterMate."""
 
 from __future__ import annotations
-
-import json
-
-import requests
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import CONF_HOST, UnitOfTemperature
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+
+from . import HarvstWatermateDataUpdateCoordinator
+from .const import DOMAIN
+from .entity import HarvstWatermateEntity
 
 
-def get_new_reading(url):
-    # Set the headers
-    headers = {
-        "Accept": "text/event-stream",
-        "User-Agent": "Mozilla/5.0 (Home Assistant Integration)",
-    }
-
-    # Custom event listener
-    def handle_event(event):
-        if event.startswith("data:"):
-            # Extract the data field from the event
-            data = event[len("data: ") :].strip()  # Remove leading/trailing whitespace
-            if data.startswith("{") and data.endswith("}"):
-                # Parse the JSON data
-                return json.loads(data)
-
-    # Make the HTTP request and handle the SSE stream
-    with requests.get(
-        url, headers=headers, verify=False, stream=True, timeout=30
-    ) as response:
-        for line in response.iter_lines():
-            if line:
-                relevant_data = handle_event(line.decode("utf-8"))
-                if relevant_data:
-                    return relevant_data
-
-
-def setup_platform(
+async def async_setup_entry(
     hass: HomeAssistant,
-    config: ConfigType,
-    add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the sensor platform."""
-    host_ip = config.get(CONF_HOST)
+    """Set up Harvst WaterMate sensors from a config entry."""
+    data = hass.data[DOMAIN][entry.entry_id]
+    coordinator: HarvstWatermateDataUpdateCoordinator = data["coordinator"]
 
-    SilverBullet = TemperatureSilver(host_ip=host_ip)
-    add_entities([SilverBullet])
+    async_add_entities([HarvstWatermateTemperatureSensor(coordinator, entry)])
 
 
-class TemperatureSilver(SensorEntity):
-    """Representation of a Sensor."""
+class HarvstWatermateTemperatureSensor(HarvstWatermateEntity, SensorEntity):
+    """Representation of the WaterMate ambient temperature."""
 
-    _attr_name = "Harvst Main Temperature"
-    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_state_class = SensorStateClass.MEASUREMENT
 
-    def __init__(self, host_ip) -> None:
-        """Initialize the output."""
-        self.url_to_events = "http://" + host_ip + "/events"
-        self._attr_is_on = False
-        print("Init: " + self._attr_name)
+    def __init__(
+        self,
+        coordinator: HarvstWatermateDataUpdateCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        super().__init__(
+            coordinator,
+            entry,
+            unique_suffix="temperature",
+            name="Harvst Main Temperature",
+        )
 
-    def update(self) -> None:
-        """Fetch new state data for the sensor.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-
-        # Call the function to get a new reading
-        new_reading = get_new_reading(self.url_to_events)
-        print(new_reading)
-
-        self._attr_native_value = new_reading.get("te")
+    @property
+    def native_value(self) -> float | int | None:
+        """Return the sensor value from the latest coordinator data."""
+        data = self.coordinator.data or {}
+        value = data.get("te")
+        if value is None:
+            return None
+        if isinstance(value, (int, float)):
+            return value
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
