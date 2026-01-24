@@ -26,6 +26,7 @@ CONTROL_HEADERS = {
 }
 
 _TIMEOUT = 15
+_CONNECTION_TEST_TIMEOUT = 30
 _MAX_LOG_CHARS = 200
 _REDACTED = "***REDACTED***"
 _SENSITIVE_KEYS = {"token", "password", "secret", "auth", "key", "session"}
@@ -172,7 +173,14 @@ class HarvstWatermateApiClient:
 
     def __init__(self, host: str, session: ClientSession) -> None:
         """Initialize the client."""
-        self._host = host
+        # Strip any scheme prefix the user may have included
+        normalized = host
+        for prefix in ("http://", "https://"):
+            if normalized.lower().startswith(prefix):
+                normalized = normalized[len(prefix):]
+                break
+        # Also strip any trailing slashes
+        self._host = normalized.rstrip("/")
         self._session = session
 
     @property
@@ -198,12 +206,18 @@ class HarvstWatermateApiClient:
 
     async def async_test_connection(self) -> None:
         """Validate we can reach the device."""
-        async for message in self.async_iter_events():
-            _LOGGER.debug(
-                "Connection test received payload from WaterMate: %s",
-                _format_payload_for_log(message.payload),
-            )
-            return
+        try:
+            async with async_timeout.timeout(_CONNECTION_TEST_TIMEOUT):
+                async for message in self.async_iter_events():
+                    _LOGGER.debug(
+                        "Connection test received payload from WaterMate: %s",
+                        _format_payload_for_log(message.payload),
+                    )
+                    return
+        except asyncio.TimeoutError as err:
+            raise HarvstWatermateApiClientCommunicationError(
+                "Timed out waiting for data from WaterMate events stream"
+            ) from err
         raise HarvstWatermateApiClientCommunicationError(
             "No data received from WaterMate events stream"
         )

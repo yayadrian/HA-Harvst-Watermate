@@ -143,7 +143,12 @@ class HarvstWatermateDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]
         """Start the listener and wait for the first payload."""
         self._ensure_listener_running()
         try:
-            await self._startup_future
+            await asyncio.wait_for(self._startup_future, timeout=self._REFRESH_TIMEOUT)
+        except asyncio.TimeoutError as err:
+            raise ConfigEntryNotReady("Timed out waiting for first update from device") from err
+        except asyncio.CancelledError:
+            _LOGGER.debug("First refresh was cancelled")
+            raise
         except HarvstWatermateApiClientAuthenticationError as err:
             raise ConfigEntryAuthFailed(str(err)) from err
         except HarvstWatermateApiClientError as err:
@@ -170,7 +175,7 @@ class HarvstWatermateDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]
             retry_backoff.reset()
             if self._listener_state is not _ListenerState.HEALTHY:
                 self._update_listener_state(_ListenerState.HEALTHY)
-            await self.async_set_updated_data(message.payload)
+            self.async_set_updated_data(message.payload)
             if not self._startup_future.done():
                 self._startup_future.set_result(None)
             if self._refresh_waiter and not self._refresh_waiter.done():
