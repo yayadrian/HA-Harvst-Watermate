@@ -45,10 +45,50 @@ This is an attempt to pull data and control the local web interface of the Harvs
 
 2. Restart Home Assistant.
 
+## Standalone API Harness
+
+Need to debug the WaterMate API without loading the Home Assistant integration? A lightweight CLI harness is available in `scripts/harvst_watermate_harness.py`.
+
+1. Create and activate a virtual environment (optional, but recommended):
+
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+
+1. Install the minimal dependencies:
+
+    ```bash
+    python -m pip install aiohttp==3.9.5 async_timeout==4.0.3
+    ```
+
+1. Export your WaterMate host/IP or pass it via `--host` when running the harness:
+
+    ```bash
+    export HARVST_WATERMATE_HOST=192.168.1.42
+    ```
+
+1. Run one of the available commands:
+
+    ```bash
+    # Stream a couple of events
+    python scripts/harvst_watermate_harness.py events --limit 5
+
+    # Send a control command (valid outputs: x1, x2, x3)
+    python scripts/harvst_watermate_harness.py set-output x1 on
+
+    # Perform a connection test (exits after first payload)
+    python scripts/harvst_watermate_harness.py test
+    ```
+
+Commands exit with non-zero status codes on network/authentication errors, so they can be chained in scripts or CI runs.
+
 ## Devices tested on
+
 - Sprout S24 - 4-Season - Firmware 2024060601
 
-## TODO:
+## TODO
+
 - [x] Add to HACS
 - [x] Reduce number of calls made to device
 - [x] Add monitoring of water pumping state
