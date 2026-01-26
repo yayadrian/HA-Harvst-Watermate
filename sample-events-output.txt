@@ -1,0 +1,96 @@
+retry: 10000
+id: 51907811
+data: hello!
+
+id: 51908021
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51909021
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51910022
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51911136
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51911139
+data: ping
+
+id: 51912025
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51913025
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51914026
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51915027
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51916028
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51916141
+data: ping
+
+id: 51917030
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51918030
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51919031
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51920032
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51921145
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51921148
+data: ping
+
+id: 51922034
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51923035
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51924036
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51925037
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51926038
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
+id: 51926150
+data: ping
+
+id: 51927040
+event: new_readings
+data: {"te":4,"teAve":7,"ti":-13,"ta":-13,"h":-13,"isr":0,"pz":0,"x1":0,"x2":0,"x3":0,"cc":100}
+
